@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Janet — Café Ticket Board</title>
+<link rel="stylesheet" href="assets/chrome.css" />
+<link rel="stylesheet" href="assets/drinks.css" />
+<link rel="stylesheet" href="assets/board.css" />
+</head>
+<body>
+<!-- Illustrated agent avatar. Fills are driven by custom properties so each
+     .bot variant re-colours the same drawing; inline style is required because
+     var() is not allowed in SVG presentation attributes. -->
+<svg class="sprite" aria-hidden="true" focusable="false"><symbol id="jbot" viewBox="0 0 24 24">
+  <rect x="8.5" y=".7" width="7" height="1.8" rx=".9" style="fill:var(--r-crest)" />
+  <rect x="11.1" y="1.9" width="1.8" height="2.2" rx=".6" style="fill:var(--r-limb)" />
+  <rect x="16.6" y="3.9" width="3.6" height="10.2" rx="1.6" style="fill:var(--r-shade)" />
+  <rect x="4" y="3.3" width="14.6" height="11.2" rx="2.7" style="fill:var(--r-shell)" />
+  <rect x="18.6" y="7.3" width="1.9" height="3.4" rx=".95" style="fill:var(--r-limb)" />
+  <rect x="3.2" y="7.5" width="1.6" height="3" rx=".8" style="fill:var(--r-shade)" />
+  <rect x="5.8" y="5.2" width="11" height="7.4" rx="2" style="fill:var(--r-visor)" />
+  <rect x="7.3" y="7.4" width="2.6" height="1.9" rx=".95" style="fill:var(--r-glow)" />
+  <rect x="12.7" y="7.4" width="2.6" height="1.9" rx=".95" style="fill:var(--r-glow)" />
+  <g style="fill:var(--r-glow)" opacity=".5">
+    <rect x="9.3" y="10.4" width="1.1" height="1.1" rx=".35" />
+    <rect x="10.9" y="10.4" width="1.1" height="1.1" rx=".35" />
+    <rect x="12.5" y="10.4" width="1.1" height="1.1" rx=".35" />
+  </g>
+  <rect x="6.4" y="3.9" width="9.6" height="1" rx=".5" fill="#fff" opacity=".26" />
+  <rect x="4.6" y="17.9" width="6.6" height="4.1" rx="1.7" style="fill:var(--r-limb)" />
+  <rect x="12" y="17.9" width="6.6" height="4.1" rx="1.7" style="fill:var(--r-limb)" />
+  <rect x="7.6" y="14.1" width="9.8" height="5.9" rx="1.9" style="fill:var(--r-shade)" />
+  <rect x="5.9" y="14.4" width="10.4" height="5.7" rx="1.9" style="fill:var(--r-shell)" />
+  <rect x="7.4" y="15.7" width="4.6" height="2.8" rx=".85" style="fill:var(--r-visor)" />
+  <circle cx="13.7" cy="16.6" r=".65" style="fill:var(--r-crest)" />
+  <circle cx="13.7" cy="18.3" r=".65" style="fill:var(--r-glow)" />
+</symbol></svg>
+<div class="app">
+<aside class="rail">
+    <div class="rail-brand">
+      <img class="logo" src="assets/logo.png?v=6" alt="Café Janet AI" />
+    </div>
+
+    <div class="rail-item">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
+      Chat
+    </div>
+    <div class="rail-item active">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4M3 7l2 2 4-4M13 6h8M13 12h8M13 18h8" /></svg>
+      Work
+    </div>
+    <div class="rail-item">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18l-1.5-4.5A1 1 0 0 0 18.5 4h-13a1 1 0 0 0-1 .5zM4 9v10a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9M9 20v-5h6v5" /></svg>
+      Marketplace
+    </div>
+    <div class="rail-item">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="12" rx="3.5" /><rect x="14" y="9" width="7" height="12" rx="3.5" /><path d="M6.5 18.5v.01M17.5 5.5v.01" /></svg>
+      Connections
+    </div>
+    <div class="rail-item">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v17M16 9h3a1 1 0 0 1 1 1v11M3 21h18M9 7h1M9 11h1M9 15h1" /></svg>
+      Organization
+    </div>
+
+    <div class="rail-spacer"></div>
+
+    <a class="discover" href="https://janet.ai" target="_blank" rel="noopener noreferrer">
+      <span class="ne" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8" /></svg>
+      </span>
+      Discover Janet
+      <span class="gradient" aria-hidden="true"></span>
+    </a>
+
+    <div class="rail-user">
+      <span class="swatch">M</span>
+      <span class="who"><b>Minh Do</b><small>minh@janet.ai</small></span>
+      <svg class="chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 15 5 5 5-5M7 9l5-5 5 5" /></svg>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <span class="bot cafe" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#jbot" /></svg></span>
+      <strong>Cafe Ordering Janet</strong>
+      <span class="board-sync" id="sync" role="status" aria-live="polite">
+        <i aria-hidden="true"></i><span id="syncText">Connecting</span>
+      </span>
+    </header>
+
+    <div class="columns">
+      <section class="column" data-status="in progress">
+        <div class="column-head">
+          <span class="column-name">In Progress</span>
+          <span class="count" id="countProgress">0</span>
+        </div>
+        <div class="column-list" id="listProgress" data-status="in progress"></div>
+      </section>
+
+      <section class="column" data-status="ready">
+        <div class="column-head">
+          <span class="column-name">Ready for Pickup</span>
+          <span class="count" id="countReady">0</span>
+        </div>
+        <div class="column-list" id="listReady" data-status="ready"></div>
+      </section>
+    </div>
+  </main>
+
+<aside class="side">
+    <div class="panel">
+      <div class="panel-head">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+        Agents
+        <span class="count">6</span>
+      </div>
+      <div class="panel-list">
+        <div class="panel-item active">
+          <span class="bot cafe" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#jbot" /></svg></span>
+          <span class="name">Cafe Ordering Janet</span>
+        </div>
+        <div class="panel-item">
+          <span class="bot gtm" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#jbot" /></svg></span>
+          <span class="name">GTM Janet <span class="suffix">(organization)</span></span>
+        </div>
+        <div class="panel-item">
+          <span class="bot calls" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#jbot" /></svg></span>
+          <span class="name">Call Monitoring Janet <span class="suffix">(organization)</span></span>
+        </div>
+        <div class="panel-item">
+          <span class="bot chief" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#jbot" /></svg></span>
+          <span class="name">Chief of Staff Janet <span class="suffix">(organization)</span></span>
+        </div>
+        <div class="panel-item">
+          <span class="bot revops" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#jbot" /></svg></span>
+          <span class="name">RevOps Janet <span class="suffix">(organization)</span></span>
+        </div>
+        <div class="panel-item">
+          <span class="bot personal" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#jbot" /></svg></span>
+          <span class="name">Manna's Janet <span class="suffix">(personal)</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel panel-threads">
+      <div class="panel-head">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+        Threads
+        <button class="new-pill" type="button" tabindex="-1">+ New</button>
+      </div>
+      <div class="panel-list-fade">
+      <div class="panel-list">
+        <div class="panel-item active">
+          <span class="name">Café ticket board</span>
+          <span class="dots">···</span>
+        </div>
+        <div class="panel-item">
+          <span class="name">LinkedIn lead finder</span>
+        </div>
+        <div class="panel-item">
+          <span class="name">X lead finder</span>
+        </div>
+        <div class="panel-item">
+          <span class="name">Lead enrichment</span>
+        </div>
+        <div class="panel-item">
+          <span class="name">Find more prospects after calls</span>
+        </div>
+        <div class="panel-item">
+          <span class="name">Web forum lead finder</span>
+        </div>
+        <div class="panel-item">
+          <span class="name">Call notes to Notion and HubSpot</span>
+        </div>
+        <div class="panel-item">
+          <span class="name">Post-call items to Notion doc</span>
+        </div>
+        <div class="panel-item">
+          <span class="name">Post-call items to Linear tickets</span>
+        </div>
+        <div class="panel-item">
+          <span class="name">Daily meeting prep</span>
+        </div>
+        <div class="panel-item">
+          <span class="name">Urgent email alerts</span>
+        </div>
+        <div class="panel-item">
+          <span class="name">Daily inbox triage</span>
+        </div>
+        <div class="panel-item">
+          <span class="name">Customer emails to tickets</span>
+        </div>
+        <div class="panel-item">
+          <span class="name">Daily standup digest</span>
+        </div>
+        <div class="panel-item">
+          <span class="name">Stalled deal alerts</span>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <div class="panel panel-runs">
+      <div class="panel-head">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+        Agent Runs
+        <span class="runs-live"><i aria-hidden="true"></i><span class="runs-count"><span id="runsCount">0</span> running</span></span>
+      </div>
+      <div class="panel-list runs-list" id="runsList"></div>
+    </div>
+  </aside>
+</div>
+
+<script src="assets/config.js"></script>
+<script src="assets/drinks.js"></script>
+<script src="assets/board.js"></script>
+<script src="assets/runs.js"></script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+/* Café ticket board. The chrome comes from chrome.css; this file is only the
+   two columns and the ticket, which is the order receipt at a smaller scale. */
+
+/* live/stale indicator in the header */
+.topbar .board-sync {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--nav-dim);
+}
+
+.board-sync i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #c9c7c3;
+  transition: background .2s ease;
+}
+
+.board-sync.is-live i { background: #5fa583; }
+.board-sync.is-error i { background: #d98b6a; }
+
+/* ---------- columns ---------- */
+.columns {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 12px 24px 16px;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-edge);
+  border-radius: var(--panel-radius);
+  overflow: hidden;
+  transition: border-color .16s ease, background .16s ease;
+}
+
+/* drop target feedback */
+.column.is-over {
+  border-color: rgba(123, 84, 227, .45);
+  background: #fbfaff;
+}
+
+.column-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 15px 11px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--nav-ink);
+  border-bottom: 1px solid var(--panel-edge);
+}
+
+.column-head .count {
+  margin-left: auto;
+  min-width: 20px;
+  padding: 1px 6px;
+  border-radius: 99px;
+  background: var(--row-active);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--nav-sub);
+  text-align: center;
+}
+
+.column-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 16px 22px;
+}
+
+.column-empty {
+  margin: auto;
+  font-size: 12.5px;
+  color: var(--nav-dim);
+  text-align: center;
+}
+
+/* ---------- ticket: the receipt, rescaled ---------- */
+.receipt.ticket {
+  --tooth: 16px;
+  width: min(300px, 100%);
+  flex: none;
+  cursor: grab;
+  transition: transform .16s ease, filter .16s ease;
+}
+
+/* alternate the lean so a stack of tickets reads as loose paper */
+.receipt.ticket:nth-child(even) { transform: rotate(1.1deg); }
+.receipt.ticket:nth-child(odd) { transform: rotate(-1.1deg); }
+
+.receipt.ticket:hover {
+  transform: rotate(0deg) translateY(-2px);
+  filter: drop-shadow(0 1px 2px rgba(28, 27, 25, .06)) drop-shadow(0 16px 34px rgba(28, 27, 25, .16));
+}
+
+.receipt.ticket.is-dragging {
+  opacity: .4;
+  cursor: grabbing;
+}
+
+/* a ticket whose write-back is still in flight */
+.receipt.ticket.is-saving { pointer-events: none; }
+.receipt.ticket.is-saving .receipt-body { opacity: .55; }
+
+.ticket .receipt-body {
+  padding: 18px 20px 16px;
+  gap: 14px;
+}
+
+.ticket .receipt-art { width: 54px; margin: 0 auto 10px; }
+
+.ticket .receipt-brand {
+  font-size: 9.5px;
+  letter-spacing: .2em;
+  margin: 0 0 6px;
+}
+
+.ticket .receipt-drink {
+  font-size: 20px;
+  letter-spacing: -.02em;
+}
+
+.ticket .receipt-rows {
+  gap: 8px;
+  padding-top: 14px;
+}
+
+.ticket .receipt-rows dt { font-size: 9.5px; }
+.ticket .receipt-rows dd { font-size: 11.5px; }
+
+.ticket-actions {
+  border-top: 1px dashed #d8d6d0;
+  padding-top: 14px;
+}
+
+.ticket-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid var(--panel-edge);
+  border-radius: 11px;
+  box-shadow: 0 1px 2px rgba(28, 27, 25, .04);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+
+.ticket-btn svg { width: 13px; height: 13px; flex: none; }
+
+.ticket-btn:hover {
+  border-color: rgba(123, 84, 227, .42);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(28, 27, 25, .06), 0 8px 18px rgba(123, 84, 227, .12);
+}
+
+.ticket-btn:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
+}
+
+/* the pickup action is the terminal one, so give it the brand fill */
+.ticket-btn.is-primary {
+  background: var(--brand);
+  border-color: transparent;
+  color: #fff;
+}
+
+.ticket-btn.is-primary:hover {
+  border-color: transparent;
+  box-shadow: 0 2px 4px rgba(28, 27, 25, .06), 0 10px 22px rgba(123, 84, 227, .3);
+}
+
+@media (max-width: 900px) {
+  .columns {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+
+  .column { min-height: 320px; }
+}
+
+@media (max-width: 780px) {
+  .columns { padding: 12px 16px 16px; }
+}

@@ -1,0 +1,83 @@
+/* Cup artwork: shared by the order form's drink cards and the ticket board. */
+
+/* Cup artwork palette: --cup-a is the top band, poured downwards. */
+.drink-art {
+  --cup-a: #b7d24d;
+  --cup-b: #7b54e3;
+  --cup-c: #f7f2e7;
+  --cup-d: #f7f2e7;
+  --cup-line: #c7c4bd;
+}
+
+.drink-art.art-yuzu {
+  --cup-a: #9b72e8;
+  --cup-c: #f0a259;
+  --cup-d: #f5d777;
+}
+
+.drink-art .c-a { fill: var(--cup-a); }
+.drink-art .c-b { fill: var(--cup-b); }
+.drink-art .c-c { fill: var(--cup-c); }
+.drink-art .c-d { fill: var(--cup-d); }
+
+/* coconut water: see-through, with just enough cool cast to read as liquid */
+.drink-art .c-clear { fill: rgba(206, 228, 226, .5); }
+
+/* glass body: hairline wall plus a faint tint for the empty headspace */
+.drink-art .c-glass { fill: rgba(255, 255, 255, .5); }
+.drink-art .c-edge {
+  fill: none;
+  stroke: var(--cup-line);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.drink-art .c-rim { fill: none; stroke: var(--cup-line); stroke-width: 1.5; }
+
+/* meniscus: the elliptical top face of each liquid band */
+.drink-art .c-surface { fill: rgba(255, 255, 255, .3); }
+.drink-art .c-sheen { fill: rgba(255, 255, 255, .42); }
+.drink-art .c-shade { fill: rgba(28, 27, 25, .07); }
+
+/* liquid pours in once, then the surfaces keep breathing */
+.drink-art .c-fill {
+  animation: cupFill 1.05s cubic-bezier(.19, .86, .26, 1) both;
+}
+
+@keyframes cupFill {
+  from { transform: translateY(116px); }
+  to { transform: none; }
+}
+
+.drink-art .c-swell {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: cupSwell 4.2s ease-in-out infinite;
+}
+
+.drink-art .c-swell:nth-of-type(2) { animation-delay: -1.4s; }
+.drink-art .c-swell:nth-of-type(3) { animation-delay: -2.8s; }
+.drink-art .c-swell:nth-of-type(4) { animation-delay: -3.6s; }
+
+@keyframes cupSwell {
+  0%, 100% { transform: translateY(0) scaleX(1); }
+  50% { transform: translateY(-.9px) scaleX(1.015); }
+}
+
+.drink-art .c-bubble {
+  fill: rgba(255, 255, 255, .6);
+  opacity: 0;
+  animation: cupBubble 5s linear infinite;
+}
+
+.drink-art .c-bubble:nth-of-type(2) { animation-duration: 6.4s; animation-delay: -1.8s; }
+.drink-art .c-bubble:nth-of-type(3) { animation-duration: 5.6s; animation-delay: -3.5s; }
+.drink-art .c-bubble:nth-of-type(4) { animation-duration: 7.2s; animation-delay: -4.6s; }
+
+@keyframes cupBubble {
+  0% { opacity: 0; transform: translateY(0); }
+  14% { opacity: .55; }
+  82% { opacity: .3; }
+  100% { opacity: 0; transform: translateY(-74px); }
+}
