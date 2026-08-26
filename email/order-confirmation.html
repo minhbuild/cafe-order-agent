@@ -67,26 +67,24 @@
         cold-start latency, which is the exact wall your agent state work is
         about to hit.
 
-    IMAGES - both must be changed before sending
+    IMAGES - already set to hosted URLs
 
-      The two <img> tags point at files relative to this one, which only works
-      when previewing this file locally in a browser. Email clients cannot load
-      relative paths, so both images will be broken if you send as-is.
-
-        src="../assets/logo.png"       the Cafe Janet AI logo, top right
-        src="assets/hero-banner.png"   the matcha hero banner
-
-      Host these files on GitHub Pages (repo: minhbuild/cafe-order-agent) and
-      use these absolute URLs when sending:
+      Both <img> tags use absolute GitHub Pages URLs so images load in email
+      clients. Do not change them unless you are deploying elsewhere or using
+      inline attachments instead.
 
         src="https://minhbuild.github.io/cafe-order-agent/assets/logo.png"
+          the Cafe Janet AI logo, top right
+
         src="https://minhbuild.github.io/cafe-order-agent/email/assets/hero-banner.png"
+          the matcha hero banner
 
       Base URL: https://minhbuild.github.io/cafe-order-agent/
 
-      If you are attaching the images to the message instead, use CID references:
-      src="cid:logo" and src="cid:hero-banner". Leave every other attribute on
-      those tags - width, height, alt, border and style - exactly as it is.
+      If you are attaching the images to the message instead, swap to CID
+      references: src="cid:logo" and src="cid:hero-banner". Leave every other
+      attribute on those tags - width, height, alt, border and style - exactly
+      as it is.
 
     FIXED COPY - do not edit unless the user explicitly asks
 
@@ -127,7 +125,7 @@
               <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
                 <tr>
                   <td class="pad-x" align="right" style="padding:32px 34px 0 34px;font-size:0;line-height:0;">
-                    <img src="../assets/logo.png" alt="Caf&eacute; Janet AI" width="146" height="25" border="0" class="logo-img" style="display:inline-block;width:146px;max-width:146px;height:auto;border:0;outline:none;text-decoration:none;" />
+                    <img src="https://minhbuild.github.io/cafe-order-agent/assets/logo.png" alt="Caf&eacute; Janet AI" width="146" height="25" border="0" class="logo-img" style="display:inline-block;width:146px;max-width:146px;height:auto;border:0;outline:none;text-decoration:none;" />
                   </td>
                 </tr>
               </table>
@@ -153,7 +151,7 @@
               <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
                 <tr>
                   <td class="pad-x" style="padding:26px 34px 0 34px;">
-                    <img src="assets/hero-banner.png" alt="Tea Haus &mdash; keyboard switches suspended in a matcha-green drink" width="528" height="220" border="0" style="display:block;width:100%;max-width:528px;height:auto;border:0;outline:none;text-decoration:none;" />
+                    <img src="https://minhbuild.github.io/cafe-order-agent/email/assets/hero-banner.png" alt="Tea Haus &mdash; keyboard switches suspended in a matcha-green drink" width="528" height="220" border="0" style="display:block;width:100%;max-width:528px;height:auto;border:0;outline:none;text-decoration:none;" />
                   </td>
                 </tr>
               </table>
