@@ -911,7 +911,7 @@ function isValidEmail(value) {
 
 function getAgentTextForField(field) {
   if (field === "firstName") return "Nice to meet you, " + order.firstName + "! And your last name?";
-  if (field === "lastName") return "What's the best email for your confirmation?";
+  if (field === "lastName") return "What email should we send the confirmation to?";
   if (field === "email") return "Got it. Where do you work?";
   if (field === "company") return "All set. What drink can I get you?";
   return null;
@@ -1288,7 +1288,7 @@ async function handleUserText(text) {
   if (step === "lastName") {
     order.lastName = text;
     step = "email";
-    await agentSay("What's the best email for your confirmation?");
+    await agentSay("What email should we send the confirmation to?");
     setInputEnabled(true, "you@company.com");
     return;
   }
