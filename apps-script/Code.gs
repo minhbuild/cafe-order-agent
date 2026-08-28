@@ -118,13 +118,13 @@ function resolveRow_(sheet, data) {
   var stamp = data.timestamp ? String(data.timestamp) : '';
 
   if (row >= 2 && row <= values.length) {
-    if (!stamp || String(values[row - 1][idx.timestamp]) === stamp) return row;
+    if (!stamp || asText_(values[row - 1][idx.timestamp]) === stamp) return row;
   }
 
   if (!stamp) return 0;
 
   for (var i = 1; i < values.length; i++) {
-    if (String(values[i][idx.timestamp]) === stamp) return i + 1;
+    if (asText_(values[i][idx.timestamp]) === stamp) return i + 1;
   }
 
   return 0;

@@ -132,6 +132,7 @@ const PENDING_TTL_MS = 20000;
 let canWrite = false;
 let demoMode = false;
 let dragRow = null;
+let dropHandled = false;
 let rendered = "";
 
 /* ---------------- data ---------------- */
@@ -199,12 +200,23 @@ async function poll() {
   }
 }
 
+function ticketEl(row) {
+  return document.querySelector('.ticket[data-row="' + row + '"]');
+}
+
 async function setStatus(order, status) {
-  if (!canWrite) return;
+  if (!canWrite) {
+    console.warn("Cannot update ticket: writes are disabled.");
+    setSync("error", "Read-only");
+    return;
+  }
 
   pending.set(order.row, { status, at: Date.now() });
   rendered = "";
   render();
+
+  const el = ticketEl(order.row);
+  if (el) el.classList.add("is-saving");
 
   if (demoMode) {
     const known = orders.find((o) => o.row === order.row);
@@ -226,6 +238,7 @@ async function setStatus(order, status) {
     console.error("Could not update that ticket.", err);
     pending.delete(order.row);
     setSync("error", "Update failed");
+    if (el) el.classList.remove("is-saving");
   }
 
   rendered = "";
@@ -329,7 +342,6 @@ function ticket(order) {
     '<div class="receipt-tear is-bottom" aria-hidden="true"></div>';
 
   el.querySelector(".ticket-btn").addEventListener("click", () => {
-    el.classList.add("is-saving");
     setStatus(order, isReady ? PICKED_UP : READY);
   });
 
@@ -342,11 +354,15 @@ function ticket(order) {
   });
 
   el.addEventListener("dragend", () => {
-    dragRow = null;
     el.classList.remove("is-dragging");
     document.querySelectorAll(".column.is-over").forEach((c) => c.classList.remove("is-over"));
-    rendered = "";
-    render();
+    // drop fires before dragend, but defer clearing dragRow so drop always sees it.
+    setTimeout(() => {
+      if (!dropHandled) dragRow = null;
+      dropHandled = false;
+      rendered = "";
+      render();
+    }, 0);
   });
 
   return el;
@@ -371,22 +387,23 @@ function escapeHtml(value) {
 document.querySelectorAll(".column").forEach((column) => {
   const target = column.dataset.status;
 
-  column.addEventListener("dragover", (e) => {
+  function onDragOver(e) {
     if (dragRow === null) return;
     e.preventDefault();
     e.dataTransfer.dropEffect = "move";
     column.classList.add("is-over");
-  });
+  }
 
-  column.addEventListener("dragleave", (e) => {
+  function onDragLeave(e) {
     if (!column.contains(e.relatedTarget)) column.classList.remove("is-over");
-  });
+  }
 
-  column.addEventListener("drop", (e) => {
+  function onDrop(e) {
     if (dragRow === null) return;
     e.preventDefault();
     column.classList.remove("is-over");
 
+    dropHandled = true;
     const row = dragRow;
     dragRow = null;
 
@@ -396,7 +413,18 @@ document.querySelectorAll(".column").forEach((column) => {
     const held = pending.get(row);
     const current = held ? held.status : order.drinkStatus;
     if (current !== target) setStatus(order, target);
-  });
+  }
+
+  column.addEventListener("dragover", onDragOver);
+  column.addEventListener("dragleave", onDragLeave);
+  column.addEventListener("drop", onDrop);
+
+  const list = column.querySelector(".column-list");
+  if (list) {
+    list.addEventListener("dragover", onDragOver);
+    list.addEventListener("dragleave", onDragLeave);
+    list.addEventListener("drop", onDrop);
+  }
 });
 
 /* ---------------- start ---------------- */
