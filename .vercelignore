@@ -1,0 +1,7 @@
+apps-script/
+tools/
+build-board.py
+.shots/
+.screenshots/
+.chrome-render/
+.DS_Store

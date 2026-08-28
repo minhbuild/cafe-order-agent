@@ -65,3 +65,22 @@ rather than typed. **Start new order** resets state and clears the thread.
 
 Everything tunable sits at the top of the script block: `SHEET_ENDPOINT`, `TYPING_MS`,
 `THEATER_MS`, and the `DRINKS` array.
+
+## Deploy on Vercel
+
+Static site — no build step. Vercel serves the repo root as-is (`index.html` at `/`, `board.html` at `/board.html`).
+
+**GitHub (recommended):** [Import the repo](https://vercel.com/new) → `minhbuild/cafe-order-agent` → deploy. Every push to `master` redeploys automatically.
+
+**CLI:**
+
+```bash
+npx vercel login          # once
+npx vercel --prod         # production deploy from repo root
+```
+
+`vercel.json` sets long-lived cache headers for `/assets/*` and `/email/assets/*`. `.vercelignore` keeps backend-only paths (`apps-script/`, `tools/`, local screenshot folders) off the deployment.
+
+The Apps Script `/exec` URL lives in `assets/config.js` as `SHEET_ENDPOINT` — use the same value on Vercel and [GitHub Pages](https://minhbuild.github.io/cafe-order-agent/). Email template images can stay on `minhbuild.github.io`; no change required for Vercel.
+
+**Preview (anonymous CLI):** If you are not logged in, `npx vercel deploy --temporary --yes` uploads a short-lived preview. Claim it from the CLI output link to attach it to your Vercel account and assign a stable production domain.
