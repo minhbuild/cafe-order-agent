@@ -1,7 +1,7 @@
 # Café popup order agent
 
 A single-page order form dressed up as an AI agent chat. There is no model behind it —
-"Janet" is a linear state machine that collects four fields, plays a short fake
+"Janet" is a linear state machine that collects five fields, plays a short fake
 integration sequence, and writes one row to a Google Sheet at the end.
 
 ## Files
@@ -54,7 +54,7 @@ finishes normally.
 
 ## The flow
 
-`firstName → lastName → company → theater → drink → submit → done`
+`firstName → lastName → email → company → theater → drink → submit → done`
 
 The agent shows a typing indicator for 1.5s before every message and the input is
 disabled while it "types". After the company answer, two fake tool rows run for 1.5s

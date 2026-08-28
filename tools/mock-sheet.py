@@ -20,14 +20,14 @@ PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 8766
 
 DRINKS = ["Coconut Matcha Cloud", "Yuzu Passionfruit Tonic"]
 SEED = [
-    ("Mia", "Chen", "Dedalus Labs", 0, "in progress"),
-    ("Arjun", "Patel", "Northwind", 0, "in progress"),
-    ("Sofia", "Reyes", "Helix Bio", 1, "in progress"),
-    ("Tom", "Okafor", "Janet AI", 1, "ready"),
-    ("Lena", "Brandt", "Foldspace", 0, "ready"),
-    ("Kai", "Nakamura", "Orbital", 1, "in progress"),
-    ("Priya", "Sharma", "Lattice", 0, "ready"),
-    ("James", "Wu", "Copperfield", 1, "in progress"),
+    ("Mia", "Chen", "Dedalus Labs", "mia.chen@dedaluslabs.com", 0, "in progress"),
+    ("Arjun", "Patel", "Northwind", "arjun.patel@northwind.io", 0, "in progress"),
+    ("Sofia", "Reyes", "Helix Bio", "sofia.reyes@helixbio.com", 1, "in progress"),
+    ("Tom", "Okafor", "Janet AI", "tom.okafor@janet.ai", 1, "ready"),
+    ("Lena", "Brandt", "Foldspace", "lena.brandt@foldspace.co", 0, "ready"),
+    ("Kai", "Nakamura", "Orbital", "kai.nakamura@orbital.dev", 1, "in progress"),
+    ("Priya", "Sharma", "Lattice", "priya.sharma@lattice.com", 0, "ready"),
+    ("James", "Wu", "Copperfield", "james.wu@copperfield.co", 1, "in progress"),
 ]
 
 now = datetime.now(timezone.utc)
@@ -38,11 +38,12 @@ ORDERS = [
         "firstName": first,
         "lastName": last,
         "company": company,
+        "email": email,
         "drink": DRINKS[drink],
         "drinkStatus": status,
         "emailStatus": "pending",
     }
-    for i, (first, last, company, drink, status) in enumerate(SEED)
+    for i, (first, last, company, email, drink, status) in enumerate(SEED)
 ]
 
 
@@ -89,6 +90,7 @@ class Handler(BaseHTTPRequestHandler):
                 "firstName": data.get("firstName", ""),
                 "lastName": data.get("lastName", ""),
                 "company": data.get("company", ""),
+                "email": data.get("email", ""),
                 "drink": data.get("drink", ""),
                 "drinkStatus": data.get("drinkStatus", "in progress"),
                 "emailStatus": data.get("emailStatus", "pending"),

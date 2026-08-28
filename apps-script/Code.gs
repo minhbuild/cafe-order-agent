@@ -27,6 +27,7 @@ var HEADERS = [
   'First name',
   'Last name',
   'Company',
+  'Email',
   'Drink',
   'Drink Status',
   'Email Status'
@@ -76,6 +77,7 @@ function appendOrder_(data) {
     data.firstName || '',
     data.lastName || '',
     data.company || '',
+    data.email || '',
     data.drink || '',
     data.drinkStatus || DRINK_IN_PROGRESS,
     data.emailStatus || DEFAULT_EMAIL_STATUS
@@ -147,6 +149,7 @@ function getBoardOrders_() {
       firstName: row[idx.firstName] || '',
       lastName: row[idx.lastName] || '',
       company: row[idx.company] || '',
+      email: row[idx.email] || '',
       drink: row[idx.drink] || '',
       drinkStatus: String(row[idx.drinkStatus] || DRINK_IN_PROGRESS).toLowerCase(),
       emailStatus: String(row[idx.emailStatus] || DEFAULT_EMAIL_STATUS).toLowerCase()
@@ -173,9 +176,10 @@ function indexMap_(headers) {
     firstName: col('First name', 1),
     lastName: col('Last name', 2),
     company: col('Company', 3),
-    drink: col('Drink', 4),
-    drinkStatus: col('Drink Status', 5),
-    emailStatus: col('Email Status', 6)
+    email: col('Email', 4),
+    drink: col('Drink', 5),
+    drinkStatus: col('Drink Status', 6),
+    emailStatus: col('Email Status', 7)
   };
 }
 
@@ -198,6 +202,18 @@ function getSheet_() {
 function ensureHeaders_(sheet) {
   var lastCol = Math.max(sheet.getLastColumn(), HEADERS.length);
   var existing = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+
+  // Sheets that predate the Email column would otherwise have drink/status
+  // cells slide under the new header when HEADERS is rewritten in place.
+  if (existing.indexOf('Email') === -1) {
+    var emailAt = HEADERS.indexOf('Email');
+    if (emailAt !== -1) {
+      sheet.insertColumnBefore(emailAt + 1);
+      lastCol = Math.max(sheet.getLastColumn(), HEADERS.length);
+      existing = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+    }
+  }
+
   var changed = false;
 
   for (var i = 0; i < HEADERS.length; i++) {
